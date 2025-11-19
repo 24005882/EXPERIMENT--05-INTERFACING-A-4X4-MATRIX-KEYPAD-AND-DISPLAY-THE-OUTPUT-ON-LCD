@@ -177,104 +177,85 @@ https://engineeringxpert.com/wp-content/uploads/2022/04/26.png
 
 ![image](https://user-images.githubusercontent.com/36288975/233856904-99eb708a-c907-4595-9025-c9dbd89b8879.png)
 
+## CIRCUIT DIAGRAM 
+ 
+<img width="898" height="722" alt="image" src="https://github.com/user-attachments/assets/d5350f0e-9f9c-4254-a37e-eb2b6368399d" />
 
- ## STM 32 CUBE PROGRAM :
- ```
- ## NAME: SINGAMALA VENKATA SAI KUMAR REDDY
- ## REG NO: 212223230208
-```
+## STM 32 CUBE PROGRAM :
+
 ```
 #include "main.h"
 #include "lcd.h"
 #include <stdbool.h>
 
-// Boolean variables for key states
 bool col1, col2, col3, col4;
 
-// Function prototypes
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-void key(void);
 
-// LCD handle and pin configuration
+void key(void);
 Lcd_PortType ports[] = {GPIOA, GPIOA, GPIOA, GPIOA};
-Lcd_PinType pins[]   = {GPIO_PIN_3, GPIO_PIN_2, GPIO_PIN_1, GPIO_PIN_0};
+Lcd_PinType pins[] = {GPIO_PIN_3, GPIO_PIN_2, GPIO_PIN_1, GPIO_PIN_0};
 Lcd_HandleTypeDef lcd;
 
 int main(void)
 {
-    // HAL Initialization
     HAL_Init();
     SystemClock_Config();
     MX_GPIO_Init();
 
-    // Create LCD handle
     lcd = Lcd_create(ports, pins, GPIOB, GPIO_PIN_0, GPIOB, GPIO_PIN_1, LCD_4_BIT_MODE);
 
-    // Infinite loop
     while (1)
     {
         key();
     }
 }
 
-// Function to check keys
-void key(void)
+void key()
 {
-    // Recreate LCD handle (optional, but included in your code)
-    Lcd_HandleTypeDef lcd;
-    lcd = Lcd_create(ports, pins, GPIOB, GPIO_PIN_0, GPIOB, GPIO_PIN_1, LCD_4_BIT_MODE);
-
-    // Drive one row low, others high
+  
     HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
     HAL_GPIO_WritePin(GPIOC, GPIO_PIN_2, GPIO_PIN_SET);
     HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3, GPIO_PIN_SET);
 
-    // Read columns
     col1 = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_4);
     col2 = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_5);
     col3 = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_6);
     col4 = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_7);
 
-    // Set cursor position
-    Lcd_cursor(&lcd, 0, 1);
+    Lcd_cursor(&lcd, 0, 0); // Set to valid position
 
-    // Check which key is pressed
     if (!col1)
     {
-        Lcd_string(&lcd, "key 7\n");
+        Lcd_string(&lcd, "key 7 ");
         HAL_Delay(1000);
     }
     else if (!col2)
     {
-        Lcd_string(&lcd, "key 8\n");
+        Lcd_string(&lcd, "key 8 ");
         HAL_Delay(1000);
     }
     else if (!col3)
     {
-        Lcd_string(&lcd, "key 9\n");
+        Lcd_string(&lcd, "key 9 ");
         HAL_Delay(1000);
     }
     else if (!col4)
     {
-        Lcd_string(&lcd, "key /\n");
+        Lcd_string(&lcd, "key % ");
         HAL_Delay(1000);
     }
 }
-void SystemClock_Config(void) 
+void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-  /** Configure the main internal regulator output voltage
-  */
+
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE2);
-
-  /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
@@ -283,9 +264,6 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-
-  /** Initializes the CPU, AHB and APB buses clocks
-  */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
@@ -299,109 +277,85 @@ void SystemClock_Config(void)
   }
 }
 
-/**
-  * @brief GPIO Initialization Function
-  * @param None
-  * @retval None
-  */
+
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-  /* USER CODE BEGIN MX_GPIO_Init_1 */
 
-  /* USER CODE END MX_GPIO_Init_1 */
-
-  /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
-  /*Configure GPIO pin Output Level */
+
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : PC0 PC1 PC2 PC3 */
   GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PA0 PA1 PA2 PA3 */
   GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PC4 PC5 PC6 PC7 */
+  
   GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PB0 PB1 */
+
   GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /* USER CODE BEGIN MX_GPIO_Init_2 */
-
-  /* USER CODE END MX_GPIO_Init_2 */
 }
 
-/* USER CODE BEGIN 4 */
-
-/* USER CODE END 4 */
-
-/**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
 void Error_Handler(void)
 {
-  /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
   while (1)
   {
   }
-  /* USER CODE END Error_Handler_Debug */
+  
 }
-#ifdef USE_FULL_ASSERT
-/**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
+
+#ifdef  USE_FULL_ASSERT
+
 void assert_failed(uint8_t *file, uint32_t line)
 {
-  /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-  /* USER CODE END 6 */
+
 }
 #endif /* USE_FULL_ASSERT */
+
+
 ```
 
-
 ## Output screen shots of proteus  :
+## OF
 
-<img width="1146" height="795" alt="image" src="https://github.com/user-attachments/assets/6c29bb30-e776-4b39-980c-42c74a9d9b7c" />
 
- 
+<img width="1028" height="703" alt="image" src="https://github.com/user-attachments/assets/c1b8fbd1-7425-47a4-afce-4bb6e4a6c3a3" />
+
+
+## ON
+
+
+<img width="1022" height="745" alt="image" src="https://github.com/user-attachments/assets/f3d2e02e-1745-4785-af82-68d2c424fe3a" />
+
+
+
  ## CIRCUIT DIAGRAM (EXPORT THE GRAPHICS TO PDF AND ADD THE SCREEN SHOT HERE): 
-
- <img width="1208" height="843" alt="Screenshot 2025-09-26 090513" src="https://github.com/user-attachments/assets/123f7c73-b959-498f-87c9-c2b65e95ffef" />
+ <img width="1007" height="764" alt="image" src="https://github.com/user-attachments/assets/404eafa4-f9af-44d8-ba60-04bbcfe84097" />
 
  
 ## Result :
